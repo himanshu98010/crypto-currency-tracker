@@ -1,27 +1,46 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { TrendingUp, TrendingDown, RefreshCw, Calculator, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  TrendingUp,
+  TrendingDown,
+  RefreshCw,
+  Calculator,
+  Moon,
+  Sun,
+} from "lucide-react";
+import { useTheme } from "next-themes";
 
 interface CryptoData {
-  id: string
-  name: string
-  symbol: string
-  price: number
-  change24h: number
-  marketCap: number
-  volume24h: number
+  id: string;
+  name: string;
+  symbol: string;
+  price: number;
+  change24h: number;
+  marketCap: number;
+  volume24h: number;
 }
 
 interface CurrencyRates {
-  [key: string]: number
+  [key: string]: number;
 }
 
 const currencies = [
@@ -31,7 +50,12 @@ const currencies = [
   { code: "GBP", symbol: "£", name: "British Pound", region: "Europe" },
   { code: "JPY", symbol: "¥", name: "Japanese Yen", region: "Asia" },
   { code: "CHF", symbol: "CHF", name: "Swiss Franc", region: "Europe" },
-  { code: "CAD", symbol: "C$", name: "Canadian Dollar", region: "North America" },
+  {
+    code: "CAD",
+    symbol: "C$",
+    name: "Canadian Dollar",
+    region: "North America",
+  },
   { code: "AUD", symbol: "A$", name: "Australian Dollar", region: "Oceania" },
   { code: "NZD", symbol: "NZ$", name: "New Zealand Dollar", region: "Oceania" },
 
@@ -59,7 +83,12 @@ const currencies = [
   { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar", region: "Middle East" },
   { code: "BHD", symbol: "د.ب", name: "Bahraini Dinar", region: "Middle East" },
   { code: "OMR", symbol: "﷼", name: "Omani Rial", region: "Middle East" },
-  { code: "JOD", symbol: "د.ا", name: "Jordanian Dinar", region: "Middle East" },
+  {
+    code: "JOD",
+    symbol: "د.ا",
+    name: "Jordanian Dinar",
+    region: "Middle East",
+  },
   { code: "LBP", symbol: "ل.ل", name: "Lebanese Pound", region: "Middle East" },
   { code: "ILS", symbol: "₪", name: "Israeli Shekel", region: "Middle East" },
   { code: "TRY", symbol: "₺", name: "Turkish Lira", region: "Middle East" },
@@ -90,20 +119,65 @@ const currencies = [
 
   // Latin American Currencies
   { code: "MXN", symbol: "$", name: "Mexican Peso", region: "Latin America" },
-  { code: "BRL", symbol: "R$", name: "Brazilian Real", region: "Latin America" },
+  {
+    code: "BRL",
+    symbol: "R$",
+    name: "Brazilian Real",
+    region: "Latin America",
+  },
   { code: "ARS", symbol: "$", name: "Argentine Peso", region: "Latin America" },
   { code: "CLP", symbol: "$", name: "Chilean Peso", region: "Latin America" },
   { code: "COP", symbol: "$", name: "Colombian Peso", region: "Latin America" },
   { code: "PEN", symbol: "S/", name: "Peruvian Sol", region: "Latin America" },
-  { code: "UYU", symbol: "$U", name: "Uruguayan Peso", region: "Latin America" },
-  { code: "BOB", symbol: "Bs", name: "Bolivian Boliviano", region: "Latin America" },
-  { code: "PYG", symbol: "₲", name: "Paraguayan Guarani", region: "Latin America" },
-  { code: "VES", symbol: "Bs.S", name: "Venezuelan Bolívar", region: "Latin America" },
-  { code: "GTQ", symbol: "Q", name: "Guatemalan Quetzal", region: "Latin America" },
-  { code: "CRC", symbol: "₡", name: "Costa Rican Colón", region: "Latin America" },
-  { code: "DOP", symbol: "RD$", name: "Dominican Peso", region: "Latin America" },
-  { code: "JMD", symbol: "J$", name: "Jamaican Dollar", region: "Latin America" },
-]
+  {
+    code: "UYU",
+    symbol: "$U",
+    name: "Uruguayan Peso",
+    region: "Latin America",
+  },
+  {
+    code: "BOB",
+    symbol: "Bs",
+    name: "Bolivian Boliviano",
+    region: "Latin America",
+  },
+  {
+    code: "PYG",
+    symbol: "₲",
+    name: "Paraguayan Guarani",
+    region: "Latin America",
+  },
+  {
+    code: "VES",
+    symbol: "Bs.S",
+    name: "Venezuelan Bolívar",
+    region: "Latin America",
+  },
+  {
+    code: "GTQ",
+    symbol: "Q",
+    name: "Guatemalan Quetzal",
+    region: "Latin America",
+  },
+  {
+    code: "CRC",
+    symbol: "₡",
+    name: "Costa Rican Colón",
+    region: "Latin America",
+  },
+  {
+    code: "DOP",
+    symbol: "RD$",
+    name: "Dominican Peso",
+    region: "Latin America",
+  },
+  {
+    code: "JMD",
+    symbol: "J$",
+    name: "Jamaican Dollar",
+    region: "Latin America",
+  },
+];
 
 // Mock exchange rates (in a real app, fetch from an API)
 const mockExchangeRates: CurrencyRates = {
@@ -185,7 +259,7 @@ const mockExchangeRates: CurrencyRates = {
   CRC: 620,
   DOP: 56.8,
   JMD: 146,
-}
+};
 
 // Mock crypto data with realistic prices
 const initialCryptoData: CryptoData[] = [
@@ -243,28 +317,32 @@ const initialCryptoData: CryptoData[] = [
     marketCap: 14000000000,
     volume24h: 380000000,
   },
-]
+];
 
 function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   return (
-    <Button variant="outline" size="icon" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       <span className="sr-only">Toggle theme</span>
     </Button>
-  )
+  );
 }
 
 export default function CryptoTracker() {
-  const [cryptoData, setCryptoData] = useState<CryptoData[]>(initialCryptoData)
-  const [selectedCurrency, setSelectedCurrency] = useState("USD")
-  const [lastUpdated, setLastUpdated] = useState(new Date())
-  const [isLoading, setIsLoading] = useState(false)
-  const [converterAmount, setConverterAmount] = useState("1")
-  const [converterFrom, setConverterFrom] = useState("bitcoin")
-  const [converterTo, setConverterTo] = useState("USD")
+  const [cryptoData, setCryptoData] = useState<CryptoData[]>(initialCryptoData);
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
+  const [converterAmount, setConverterAmount] = useState("1");
+  const [converterFrom, setConverterFrom] = useState("bitcoin");
+  const [converterTo, setConverterTo] = useState("USD");
 
   // Simulate real-time price updates
   useEffect(() => {
@@ -274,68 +352,74 @@ export default function CryptoTracker() {
           ...crypto,
           price: crypto.price * (1 + (Math.random() - 0.5) * 0.02), // ±1% random change
           change24h: crypto.change24h + (Math.random() - 0.5) * 0.5,
-        })),
-      )
-      setLastUpdated(new Date())
-    }, 5000) // Update every 5 seconds
+        }))
+      );
+      setLastUpdated(new Date());
+    }, 5000); // Update every 5 seconds
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const formatPrice = (price: number, currency: string) => {
-    const rate = mockExchangeRates[currency]
-    const convertedPrice = price * rate
-    const currencyInfo = currencies.find((c) => c.code === currency)
+    const rate = mockExchangeRates[currency];
+    const convertedPrice = price * rate;
+    const currencyInfo = currencies.find((c) => c.code === currency);
 
     if (currency === "JPY" || currency === "CNY") {
-      return `${currencyInfo?.symbol}${convertedPrice.toFixed(0)}`
+      return `${currencyInfo?.symbol}${convertedPrice.toFixed(0)}`;
     }
-    return `${currencyInfo?.symbol}${convertedPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-  }
+    return `${currencyInfo?.symbol}${convertedPrice.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  };
 
   const formatMarketCap = (marketCap: number, currency: string) => {
-    const rate = mockExchangeRates[currency]
-    const convertedCap = marketCap * rate
-    const currencyInfo = currencies.find((c) => c.code === currency)
+    const rate = mockExchangeRates[currency];
+    const convertedCap = marketCap * rate;
+    const currencyInfo = currencies.find((c) => c.code === currency);
 
     if (convertedCap >= 1e12) {
-      return `${currencyInfo?.symbol}${(convertedCap / 1e12).toFixed(2)}T`
+      return `${currencyInfo?.symbol}${(convertedCap / 1e12).toFixed(2)}T`;
     } else if (convertedCap >= 1e9) {
-      return `${currencyInfo?.symbol}${(convertedCap / 1e9).toFixed(2)}B`
+      return `${currencyInfo?.symbol}${(convertedCap / 1e9).toFixed(2)}B`;
     } else if (convertedCap >= 1e6) {
-      return `${currencyInfo?.symbol}${(convertedCap / 1e6).toFixed(2)}M`
+      return `${currencyInfo?.symbol}${(convertedCap / 1e6).toFixed(2)}M`;
     }
-    return `${currencyInfo?.symbol}${convertedCap.toFixed(2)}`
-  }
+    return `${currencyInfo?.symbol}${convertedCap.toFixed(2)}`;
+  };
 
   const refreshData = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     setCryptoData((prevData) =>
       prevData.map((crypto) => ({
         ...crypto,
         price: crypto.price * (1 + (Math.random() - 0.5) * 0.05), // ±2.5% change
         change24h: (Math.random() - 0.5) * 10, // Random change between -5% and +5%
-      })),
-    )
-    setLastUpdated(new Date())
-    setIsLoading(false)
-  }
+      }))
+    );
+    setLastUpdated(new Date());
+    setIsLoading(false);
+  };
 
   const calculateConversion = () => {
-    const fromCrypto = cryptoData.find((c) => c.id === converterFrom)
-    if (!fromCrypto) return "0"
+    const fromCrypto = cryptoData.find((c) => c.id === converterFrom);
+    if (!fromCrypto) return "0";
 
-    const amount = Number.parseFloat(converterAmount) || 0
-    const cryptoValue = fromCrypto.price * amount
-    const rate = mockExchangeRates[converterTo]
-    const convertedValue = cryptoValue * rate
+    const amount = Number.parseFloat(converterAmount) || 0;
+    const cryptoValue = fromCrypto.price * amount;
+    const rate = mockExchangeRates[converterTo];
+    const convertedValue = cryptoValue * rate;
 
-    const currencyInfo = currencies.find((c) => c.code === converterTo)
-    return `${currencyInfo?.symbol}${convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-  }
+    const currencyInfo = currencies.find((c) => c.code === converterTo);
+    return `${currencyInfo?.symbol}${convertedValue.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -343,14 +427,19 @@ export default function CryptoTracker() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">Crypto Tracker</h1>
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Crypto Tracker
+            </h1>
             <p className="text-slate-600 dark:text-slate-400 font-medium">
               Real-time cryptocurrency prices and conversion
             </p>
           </div>
 
           <div className="flex items-center gap-4 mt-4 md:mt-0">
-            <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+            <Select
+              value={selectedCurrency}
+              onValueChange={setSelectedCurrency}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>
@@ -361,7 +450,9 @@ export default function CryptoTracker() {
                       <span className="font-medium">
                         {currency.symbol} {currency.code}
                       </span>
-                      <span className="text-xs text-muted-foreground ml-2">{currency.region}</span>
+                      <span className="text-xs text-muted-foreground ml-2">
+                        {currency.region}
+                      </span>
                     </div>
                   </SelectItem>
                 ))}
@@ -370,8 +461,14 @@ export default function CryptoTracker() {
 
             <ThemeToggle />
 
-            <Button onClick={refreshData} disabled={isLoading} variant="outline">
-              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+            <Button
+              onClick={refreshData}
+              disabled={isLoading}
+              variant="outline"
+            >
+              <RefreshCw
+                className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+              />
               Refresh
             </Button>
           </div>
@@ -389,26 +486,38 @@ export default function CryptoTracker() {
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-lg card-title">{crypto.name}</CardTitle>
-                    <CardDescription className="text-sm font-mono font-medium">{crypto.symbol}</CardDescription>
+                    <CardTitle className="text-lg card-title">
+                      {crypto.name}
+                    </CardTitle>
+                    <CardDescription className="text-sm font-mono font-medium">
+                      {crypto.symbol}
+                    </CardDescription>
                   </div>
                   <Badge
                     variant={crypto.change24h >= 0 ? "default" : "destructive"}
                     className="flex items-center gap-1 badge"
                   >
-                    {crypto.change24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {crypto.change24h >= 0 ? (
+                      <TrendingUp className="w-3 h-3" />
+                    ) : (
+                      <TrendingDown className="w-3 h-3" />
+                    )}
                     {crypto.change24h.toFixed(2)}%
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="text-2xl font-bold tabular-nums">{formatPrice(crypto.price, selectedCurrency)}</div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">
-                    Market Cap: {formatMarketCap(crypto.marketCap, selectedCurrency)}
+                  <div className="text-2xl font-bold tabular-nums">
+                    {formatPrice(crypto.price, selectedCurrency)}
                   </div>
                   <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">
-                    24h Volume: {formatMarketCap(crypto.volume24h, selectedCurrency)}
+                    Market Cap:{" "}
+                    {formatMarketCap(crypto.marketCap, selectedCurrency)}
+                  </div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+                    24h Volume:{" "}
+                    {formatMarketCap(crypto.volume24h, selectedCurrency)}
                   </div>
                 </div>
               </CardContent>
@@ -423,7 +532,9 @@ export default function CryptoTracker() {
               <Calculator className="w-5 h-5" />
               Currency Converter
             </CardTitle>
-            <CardDescription className="font-medium">Convert cryptocurrency to fiat currency</CardDescription>
+            <CardDescription className="font-medium">
+              Convert cryptocurrency to fiat currency
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -482,14 +593,48 @@ export default function CryptoTracker() {
             </div>
 
             <div className="pt-4 border-t">
-              <div className="text-sm text-slate-600 dark:text-slate-400 mb-1 font-medium">Converted Amount:</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400 mb-1 font-medium">
+                Converted Amount:
+              </div>
               <div className="text-2xl font-bold text-green-600 dark:text-green-400 tabular-nums">
                 {calculateConversion()}
               </div>
             </div>
           </CardContent>
         </Card>
+        <div>
+          <br />
+        </div>
+        <div className="flex items-center justify-center text-white py-4">
+          <div className="flex items-center gap-2">
+            <span className="text-base mt-1">Made by himanshu ~</span>
+
+            {/* GitHub Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 496 512"
+              className="w-7 h-7 cursor-pointer hover:text-gray-500 transition-colors duration-200"
+              onClick={() => window.open("https://github.com/himanshu98010")}
+            >
+              <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z" />
+            </svg>
+
+            {/* X (Twitter) Icon */}
+            <span className="[&>svg]:h-7 [&>svg]:w-7">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 512 512"
+                className="cursor-pointer hover:text-gray-500 transition-colors duration-200"
+                onClick={() => window.open("https://x.com/himanshu98010")}
+              >
+                <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+              </svg>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
